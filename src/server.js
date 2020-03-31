@@ -6,16 +6,6 @@ const dbConfig = require("./config/database.config.js");
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
-// create an express app
-const app = express();
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
-
-// connecting to the database
 mongoose
   .connect(dbConfig.url, {
     useNewUrlParser: true,
@@ -28,6 +18,17 @@ mongoose
     console.log("could not connect to DB...", err);
     process.exit();
   });
+
+// create an express app
+const app = express();
+
+// body parser set up
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// import routes
+const postRoute = require("./routes/posts");
+app.use("/posts", postRoute);
 
 // basic route
 app.get("/", (req, res) => {
